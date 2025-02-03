@@ -1,37 +1,71 @@
-import { useState } from "react"
-import type { ProjectData } from "../types"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import CodeMirror from "@uiw/react-codemirror";
+import { json } from "@codemirror/lang-json";
+import { basicSetup } from "@uiw/codemirror-extensions-basic-setup";  // Import du package
+import { oneDark } from "@codemirror/theme-one-dark";  // Import du thème One Dark
 
 interface JsonInputProps {
-  onDataSubmit: (data: ProjectData) => void
+  onDataSubmit: (data: any) => void;
 }
 
 export function JsonInput({ onDataSubmit }: JsonInputProps) {
-  const [jsonInput, setJsonInput] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const defaultJson = `{
+    "project_name": "{PROJET_NAME}",
+    "start_date": "{YYY-MM-DD}",
+    "end_date": "{YYY-MM-DD}",
+    "team": [
+      {
+        "assignee": "{PROJET_MEMBER_1}",
+        "tasks": [
+          {
+            "task": "{PROJET_MEMBER_1_TASK_1}",
+            "start_date": "{YYY-MM-DD}",
+            "end_date": "{YYY-MM-DD}"
+          }
+        ]
+      },
+      {
+        "assignee": "{PROJET_MEMBER_2}",
+        "tasks": [
+          {
+            "task": "{PROJET_MEMBER_2_TASK_1}",
+            "start_date": "{YYY-MM-DD}",
+            "end_date": "{YYY-MM-DD}"
+          }
+        ]
+      }
+    ]
+  }`;
+
+  const [jsonInput, setJsonInput] = useState<string>(defaultJson);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = () => {
     try {
-      const parsedData = JSON.parse(jsonInput) as ProjectData
-      onDataSubmit(parsedData)
-      setError(null)
+      const parsedData = JSON.parse(jsonInput);
+      onDataSubmit(parsedData);
+      setError(null);
     } catch (e) {
-      setError("Erreur de parsing JSON. Veuillez vérifier votre entrée.")
+      setError("Erreur de parsing JSON. Veuillez vérifier votre entrée.");
     }
-  }
+  };
 
   return (
     <div className="mb-4">
-      <Textarea
-        value={jsonInput}
-        onChange={(e) => setJsonInput(e.target.value)}
-        placeholder="Entrez vos données JSON ici..."
-        className="w-full h-64 mb-2"
-      />
-      <Button onClick={handleSubmit}>Générer le Diagramme</Button>
+      <div className="editor-container">
+        <CodeMirror
+          value={jsonInput}
+          height="80vh"
+          extensions={[json(), ...basicSetup()]}  // Appliquez le setup de base avec les extensions
+          theme={oneDark}  // Appliquez le thème One Dark
+          onChange={(value: string) => setJsonInput(value)}
+        />
+      </div>
+      <Button onClick={handleSubmit} className="mt-2">
+        Générer le Diagramme
+      </Button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
-  )
+  );
 }
-

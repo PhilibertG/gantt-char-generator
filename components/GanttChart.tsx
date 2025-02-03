@@ -96,7 +96,7 @@ export function GanttChart({ data }: GanttChartProps) {
 
             {/* Timeline */}
             <div className="w-3/4 flex-grow">
-              <div className="flex justify-between py-2 px-4 text-sm font-medium">
+              <div className="flex justify-between py-2 px-4 text-lg font-medium">
                 <span>{format(projectStart, "dd/MM/yyyy", { locale: fr })}</span>
                 <span>{format(projectEnd, "dd/MM/yyyy", { locale: fr })}</span>
               </div>

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.cm-content {
+  font-size: 17px !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
